@@ -1,112 +1,82 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, MarkdownPostProcessor, MarkdownPostProcessorContext, MarkdownPreviewRenderer, MarkdownRenderer, Modal, Notice, Plugin, PluginSettingTab, Setting  } from 'obsidian';
+import { smartypants } from 'smartypants';
 
-interface MyPluginSettings {
-	mySetting: string;
+// interface MyPluginSettings {
+// 	mode: number;
+// }
+
+// const DEFAULT_SETTINGS: MyPluginSettings = {
+// 	mode: 2
+// }
+
+export default class SmartypantsPlugin extends Plugin {
+	// settings: MyPluginSettings;
+
+    static postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
+        // console.log("postprocessor is called")
+
+        console.log(el)
+
+        const source = el.innerHTML
+        let educated = smartypants(source, 2) // @TODO use MyPluginSettings here
+        console.log("educated version:")
+        console.log(educated)
+
+        // el.appendChild(educated)
+        el.innerHTML = educated
+        // blockToReplace.innerHTML = educated
+    }
+
+    async onload() {
+        console.log('Loading Smartypants plugin');
+
+		// await this.loadSettings();
+
+		// this.addSettingTab(new SampleSettingTab(this.app, this));
+
+        MarkdownPreviewRenderer.registerPostProcessor(SmartypantsPlugin.postprocessor)
+    }
+
+    async onunload() {
+        console.log('unloading smartypants plugin');
+        MarkdownPreviewRenderer.unregisterPostProcessor(SmartypantsPlugin.postprocessor)
+    }
+
+	// async loadSettings() {
+	// 	this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	// }
+
+	// async saveSettings() {
+	// 	await this.saveData(this.settings);
+	// }
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+// class SampleSettingTab extends PluginSettingTab {
+// 	plugin: MyPlugin;
 
-	async onload() {
-		console.log('loading plugin');
+// 	constructor(app: App, plugin: MyPlugin) {
+// 		super(app, plugin);
+// 		this.plugin = plugin;
+// 	}
 
-		await this.loadSettings();
+// 	display(): void {
+// 		let {containerEl} = this;
 
-		this.addRibbonIcon('dice', 'Sample Plugin', () => {
-			new Notice('This is a notice!');
-		});
+// 		containerEl.empty();
 
-		this.addStatusBarItem().setText('Status Bar Text');
+// 		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
 
-		this.addCommand({
-			id: 'open-sample-modal',
-			name: 'Open Sample Modal',
-			// callback: () => {
-			// 	console.log('Simple Callback');
-			// },
-			checkCallback: (checking: boolean) => {
-				let leaf = this.app.workspace.activeLeaf;
-				if (leaf) {
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-					return true;
-				}
-				return false;
-			}
-		});
-
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		this.registerCodeMirror((cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		});
-
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
-
-	onunload() {
-		console.log('unloading plugin');
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		let {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		let {containerEl} = this;
-
-		containerEl.empty();
-
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue('')
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
-}
+// 		new Setting(containerEl)
+// 			.setName('Setting #1')
+// 			.setDesc('It\'s a secret')
+// 			.addText(text => text
+// 				.setPlaceholder('Enter your secret')
+// 				.setValue('')
+// 				.onChange(async (value) => {
+// 					console.log('Secret: ' + value);
+// 					this.plugin.settings.mode = value;
+// 					await this.plugin.saveSettings();
+// 				}));
+// 	}
+// }
