@@ -15,12 +15,12 @@ export default class SmartypantsPlugin extends Plugin {
     static postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
         // console.log("postprocessor is called")
 
-        console.log(el)
+        // console.log(el)
 
         const source = el.innerHTML
         let educated = smartypants(source, 2) // @TODO use MyPluginSettings here
-        console.log("educated version:")
-        console.log(educated)
+        // console.log("educated version:")
+        // console.log(educated)
 
         // el.appendChild(educated)
         el.innerHTML = educated
@@ -38,7 +38,7 @@ export default class SmartypantsPlugin extends Plugin {
     }
 
     async onunload() {
-        console.log('unloading smartypants plugin');
+        console.log('Unloading smartypants plugin');
         MarkdownPreviewRenderer.unregisterPostProcessor(SmartypantsPlugin.postprocessor)
     }
 
