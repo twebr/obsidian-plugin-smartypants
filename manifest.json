@@ -3,8 +3,8 @@
 	"name": "Smartypants Plugin",
 	"version": "1.0.1",
 	"minAppVersion": "0.9.12",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md/about",
+	"description": "This plugin adds smart typography to previews, using Smartypants.",
+	"author": "twebr",
+	"authorUrl": "https://github.com/twebr/obsidian-plugin-smartypants",
 	"isDesktopOnly": false
 }
